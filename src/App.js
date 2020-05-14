@@ -1,26 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import NewTimer from './components/new-timer'
+import ListTimers from './list-timers'
+import reducers from './reducers'
+import { update } from './actions'
+const store  = createStore(reducers)
+let lastUpdateTime = Date.now()
+
+setInterval(()=>{
+  const now = Date.now()
+  const deltatime = now - lastUpdateTime;
+  lastUpdateTime = now;
+  store.dispatch(update(deltatime))
+},50)
+class App extends React.Component{
+  render(){
+    return(
+      <Provider store={store}>
+      <div className="App">
+          <header className="App-header">
+            <h1 className="App-title">Welcome to React</h1>
+          </header>
+          <NewTimer />
+          <ListTimers />
+        </div>
+      </Provider>
+    )
+  }
 }
-
 export default App;
